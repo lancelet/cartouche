@@ -1,34 +1,40 @@
-cabal-version:      2.4
+cabal-version:      3.0
 name:               cartouche
 version:            0.1.0.0
+synopsis:           Document generator.
+description:
+  Opinionated document generator with S-expression-like markup.
 
--- A short (one-line) description of the package.
--- synopsis:
-
--- A longer description of the package.
--- description:
-
--- A URL where users can report bugs.
--- bug-reports:
-
--- The license under which the package is released.
--- license:
+bug-reports:        https://github.com/lancelet/cartouche/issues
+license:            BSD-3-Clause
 author:             Jonathan Merritt
 maintainer:         j.s.merritt@gmail.com
-
--- A copyright notice.
--- copyright:
--- category:
+copyright:          Copyright (C) Jonathan Merritt 2021
+category:           Documentation
 extra-source-files: CHANGELOG.md
 
+source-repository head
+  type:     git
+  location: https://github.com/lancelet/cartouche.git
+
+common base
+  default-language: Haskell2010
+  build-depends:    base ^>=4.14.0.0
+
+common ghc-options
+  ghc-options:
+    -Wall -Wcompat -Wincomplete-record-updates
+    -Wincomplete-uni-patterns -Wredundant-constraints
+
 executable cartouche
-    main-is:          Main.hs
+  import:         base, ghc-options
+  main-is:        Main.hs
+  hs-source-dirs: app
 
-    -- Modules included in this executable, other than Main.
-    -- other-modules:
-
-    -- LANGUAGE extensions used by modules in this package.
-    -- other-extensions:
-    build-depends:    base ^>=4.14.2.0
-    hs-source-dirs:   app
-    default-language: Haskell2010
+library
+  import:          base, ghc-options
+  hs-source-dirs:  src
+  exposed-modules: Cartouche.Doc
+  build-depends:
+    , megaparsec
+    , text

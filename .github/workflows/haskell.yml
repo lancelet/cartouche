@@ -37,6 +37,11 @@ jobs:
         ghcup set ghc ${GHC_VERSION}
         ghcup set cabal ${CABAL_VERSION}
 
+    - name: Install hspretty and lint
+      run |
+        cabal install cabal-fmt hspretty
+        PATH="$PATH":/home/runner/.cabal.bin hspretty check
+
     - name: Install dependencies
       run: |
         cabal update

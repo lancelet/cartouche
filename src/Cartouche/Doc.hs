@@ -1,0 +1,2 @@
+-- |
+module Cartouche.Doc where
