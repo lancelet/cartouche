@@ -4,9 +4,7 @@
 module Cartouche.Doc where
 
 import Data.Functor (($>))
-import qualified Data.Sequence as Seq
 import Data.Text (Text)
-import qualified Data.Text as Text
 import Data.Void (Void)
 import Text.Megaparsec ((<|>))
 import qualified Text.Megaparsec as MP
