@@ -1,0 +1,3 @@
+packages: ./
+-- required for doctest
+write-ghc-environment-files: always

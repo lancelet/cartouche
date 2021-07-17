@@ -31,10 +31,20 @@ executable cartouche
   main-is:        Main.hs
   hs-source-dirs: app
 
+test-suite cartouche-test
+  import:         base
+  type:           exitcode-stdio-1.0
+  hs-source-dirs: test
+  main-is:        Test.hs
+  build-depends:
+    , doctest
+    , megaparsec
+
 library
   import:          base, ghc-options
   hs-source-dirs:  src
   exposed-modules: Cartouche.Doc
   build-depends:
+    , containers
     , megaparsec
     , text
