@@ -3,6 +3,8 @@
 -- |
 module Cartouche.Doc where
 
+{-
+
 import Data.Functor (($>))
 import Data.Text (Text)
 import Data.Void (Void)
@@ -187,3 +189,5 @@ isWhitespace c = c == ' ' || c == '\t' || c == '\n'
 --
 -- >>> :set -XOverloadedStrings
 -- >>> import qualified Text.Megaparsec as MP
+
+-}

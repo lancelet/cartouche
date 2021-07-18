@@ -30,6 +30,10 @@ executable cartouche
   import:         base, ghc-options
   main-is:        Main.hs
   hs-source-dirs: app
+  build-depends:
+    , cartouche
+    , megaparsec
+    , text
 
 test-suite cartouche-test
   import:         base
@@ -43,7 +47,11 @@ test-suite cartouche-test
 library
   import:          base, ghc-options
   hs-source-dirs:  src
-  exposed-modules: Cartouche.Doc
+  exposed-modules:
+    Cartouche.Doc
+    Cartouche.Doc.Parser
+    Cartouche.Doc.Types
+
   build-depends:
     , containers
     , megaparsec

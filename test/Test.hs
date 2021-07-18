@@ -16,5 +16,5 @@ docTests :: IO ()
 docTests =
   Test.DocTest.doctest
     [ "-isrc",
-      "src/Cartouche/Doc.hs"
+      "src/Cartouche/Doc/Parser.hs"
     ]
