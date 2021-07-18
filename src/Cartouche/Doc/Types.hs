@@ -8,8 +8,8 @@ newtype Doc = Doc [Block]
   deriving (Show)
 
 data Block
-  = BlockPara !Para
-  | BlockHead !Head
+  = BlockHead !Head
+  | BlockPara !Para
   deriving (Show)
 
 newtype Para = Para [Inline]
@@ -27,9 +27,6 @@ data HeadLevel = HeadLevel1 | HeadLevel2 | HeadLevel3
   deriving (Show)
 
 newtype Emph = Emph [Inline]
-  deriving (Show)
-
-newtype Word = Word Text
   deriving (Show)
 
 newtype Str = Str Text

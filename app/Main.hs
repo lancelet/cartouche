@@ -10,4 +10,4 @@ main = do
   putStrLn "Loading test.cart"
   txt <- readFile "test.cart"
   putStrLn "Running parser"
-  -- MP.parseTest Parser.doc txt
+  MP.parseTest Parser.doc txt

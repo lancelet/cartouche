@@ -1,0 +1,6 @@
+|(h1 "Heading")
+
+This is an example of a |(emph "Cartouche") document. This is a paragraph.
+Paragraphs can have multiple lines.
+
+This is now a second paragraph.
