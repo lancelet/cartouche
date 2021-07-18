@@ -54,11 +54,6 @@ inlines = mconcat <$> MP.some line
 line :: Parser [Inline]
 line = MP.some inline <* optws <* newLine
 
-{-
-endOfParaLine :: Parser ()
-endOfParaLine = MP.try (optws *> newLine *> MP.notFollowedBy blankLine)
--}
-
 inline :: Parser Inline
 inline =
   (InlineStr <$> str)
@@ -145,19 +140,6 @@ optwsnl =
 
 isPlainTextChar :: Char -> Bool
 isPlainTextChar c = c /= '\n' && c /= '|'
-
-{-
-isWordChar :: Char -> Bool
-isWordChar c = charInRange ('!', '{') c || c == '}' || c == '~'
-
-charInRange :: (Char, Char) -> Char -> Bool
-charInRange (cMin, cMax) c = (i >= iMin) && (i <= iMax)
-  where
-    i, iMin, iMax :: Int
-    i = ord c
-    iMin = ord cMin
-    iMax = ord cMax
--}
 
 isRegStringChar :: Char -> Bool
 isRegStringChar c = c /= '"' && c /= '\\'
