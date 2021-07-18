@@ -16,6 +16,7 @@ import Cartouche.Doc.Types
   )
 import Data.Functor (($>))
 import Data.Text (Text)
+import qualified Data.Text as Text
 import Data.Void (Void)
 import Text.Megaparsec ((<|>))
 import qualified Text.Megaparsec as MP
@@ -49,7 +50,15 @@ para :: Parser Para
 para = Para <$> inlines
 
 inlines :: Parser [Inline]
-inlines = mconcat <$> MP.some line
+inlines = collapseStrs . mconcat <$> MP.some line
+
+collapseStrs :: [Inline] -> [Inline]
+collapseStrs xs =
+  case xs of
+    (InlineStr a) : (InlineStr b) : ys ->
+      InlineStr (a <> Str " " <> b) : collapseStrs ys
+    y : ys -> y : collapseStrs ys
+    [] -> []
 
 line :: Parser [Inline]
 line = MP.some inline <* optws <* newLine
@@ -60,7 +69,16 @@ inline =
     <|> (InlineEmph <$> emph)
 
 str :: Parser Str
-str = Str <$> MP.takeWhile1P (Just "plain text") isPlainTextChar
+str = Str . mconcat <$> MP.some strChunk
+  where
+    strChunk, plainStr, escaped :: Parser Text
+    strChunk = plainStr <|> escaped
+    plainStr = MP.takeWhile1P (Just "plain text") isPlainTextChar
+    escaped =
+      MP.single '\\'
+        *> ( (MP.single '|' $> "|")
+               <|> (MP.anySingle >>= \c -> pure $ Text.pack ['\\', c])
+           )
 
 emph :: Parser Emph
 emph = cartouche sEmph
@@ -139,7 +157,7 @@ optwsnl =
 -------------------------------------------------------------------------------
 
 isPlainTextChar :: Char -> Bool
-isPlainTextChar c = c /= '\n' && c /= '|'
+isPlainTextChar c = c /= '\n' && c /= '|' && c /= '\\'
 
 isRegStringChar :: Char -> Bool
 isRegStringChar c = c /= '"' && c /= '\\'

@@ -31,3 +31,8 @@ newtype Emph = Emph [Inline]
 
 newtype Str = Str Text
   deriving (Show)
+
+-------------------------------------------------------------------------------
+
+instance Semigroup Str where
+  (Str x) <> (Str y) = Str (x <> y)

@@ -4,3 +4,5 @@ This is an example of a |(emph "Cartouche") document. This is a paragraph.
 Paragraphs can have multiple lines.
 
 This is now a second paragraph.
+
+To draw a vertical bar, it must be escaped; like this \|.
