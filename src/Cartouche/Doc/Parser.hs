@@ -50,7 +50,7 @@ para :: Parser Para
 para = Para <$> inlines
 
 inlines :: Parser [Inline]
-inlines = collapseStrs . mconcat <$> MP.some line
+inlines = collapseMultipleSpaces . collapseStrs . mconcat <$> MP.some line
 
 collapseStrs :: [Inline] -> [Inline]
 collapseStrs xs =
@@ -59,6 +59,26 @@ collapseStrs xs =
       InlineStr (a <> Str " " <> b) : collapseStrs ys
     y : ys -> y : collapseStrs ys
     [] -> []
+
+collapseMultipleSpaces :: [Inline] -> [Inline]
+collapseMultipleSpaces xs = cmsInline <$> xs
+  where
+    cmsInline :: Inline -> Inline
+    cmsInline x =
+      case x of
+        InlineStr (Str txt) -> InlineStr (Str (cmsText txt))
+        InlineEmph (Emph e) -> InlineEmph (Emph (collapseMultipleSpaces e))
+
+    cmsText :: Text -> Text
+    cmsText txt = consolidate $ Text.splitOn "  " txt
+
+    consolidate :: [Text] -> Text
+    consolidate ys =
+      case ys of
+        [] -> Text.empty
+        "" : "" : zs -> consolidate zs
+        "" : zs -> Text.cons ' ' $ consolidate zs
+        z : zs -> z <> consolidate zs
 
 line :: Parser [Inline]
 line = MP.some inline <* optws <* newLine
