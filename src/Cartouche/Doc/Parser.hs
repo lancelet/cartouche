@@ -21,7 +21,9 @@ import Cartouche.Doc.Types
     Emph (Emph),
     Head (Head),
     HeadLevel (HeadLevel1, HeadLevel2, HeadLevel3),
-    Inline (InlineEmph, InlineStr),
+    Inline (InlineEmph, InlineLink, InlineStr),
+    Link (Link),
+    LinkUrl (LinkUrl),
     Para (Para),
     Str (Str),
   )
@@ -71,7 +73,7 @@ collapseStrs :: [Inline] -> [Inline]
 collapseStrs xs =
   case xs of
     (InlineStr a) : (InlineStr b) : ys ->
-      InlineStr (a <> Str " " <> b) : collapseStrs ys
+      collapseStrs (InlineStr (a <> Str " " <> b) : ys)
     y : ys -> y : collapseStrs ys
     [] -> []
 
@@ -83,6 +85,7 @@ collapseMultipleSpaces xs = cmsInline <$> xs
       case x of
         InlineStr (Str txt) -> InlineStr (Str (cmsText txt))
         InlineEmph (Emph e) -> InlineEmph (Emph (collapseMultipleSpaces e))
+        InlineLink (Link u t) -> InlineLink (Link u (collapseMultipleSpaces t))
 
     cmsText :: Text -> Text
     cmsText txt = consolidate $ Text.splitOn "  " txt
@@ -100,8 +103,9 @@ line = MP.some inline <* optws <* newLine
 
 inline :: Parser Inline
 inline =
-  (InlineStr <$> str)
-    <|> (InlineEmph <$> emph)
+  (InlineEmph <$> MP.try emph)
+    <|> (InlineLink <$> MP.try link)
+    <|> (InlineStr <$> str)
 
 str :: Parser Str
 str = Str . mconcat <$> MP.some strChunk
@@ -117,6 +121,9 @@ str = Str . mconcat <$> MP.some strChunk
 
 emph :: Parser Emph
 emph = cartouche sEmph
+
+link :: Parser Link
+link = cartouche sLink
 
 -------------------------------------------------------------------------------
 -- BOOK ITEMS
@@ -153,8 +160,9 @@ sInlines = MP.many (sInline <* optwsnl)
 
 sInline :: Parser Inline
 sInline =
-  (InlineStr <$> sStr)
-    <|> (InlineEmph <$> sEmph)
+  (InlineEmph <$> MP.try sEmph)
+    <|> (InlineLink <$> MP.try sLink)
+    <|> (InlineStr <$> sStr)
 
 sHead :: Parser Head
 sHead = inS $ Head <$> (sHeadLevel <* optwsnl) <*> sInlines
@@ -169,6 +177,12 @@ sHeadLevel =
 
 sEmph :: Parser Emph
 sEmph = inS $ Emph <$> (sSym "emph" *> sInlines)
+
+sLink :: Parser Link
+sLink =
+  inS $
+    Link <$> (sSym "link" *> (LinkUrl <$> sString) <* optwsnl)
+      <*> sInlines
 
 inS :: Parser a -> Parser a
 inS p = MP.single '(' *> optwsnl *> p <* optwsnl <* MP.single ')'

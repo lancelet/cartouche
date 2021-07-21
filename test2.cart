@@ -1,3 +1,24 @@
-|(h1 "Second document")
+|(h1 "Shadow of a Line Segment")
 
-This is a second document, which will be rendered on its own page.
+Classic stencil-and-cover rendering requires computing a "stencil". This is a
+mask where each pixel contains the fractional coverage of the polygon currently
+being rendered. The stencil mask is used by the later "cover" operation to
+decide which pixels to paint, and how much.
+
+In order to compute the stencil mask, we need a fast way to compute the pixel
+coverage of the polygon. The approach described here involves combining the
+|(link "https://en.wikipedia.org/wiki/Jordan_curve_theorem"
+  "Jordan Curve Theorem") with a fast algorithm that can compute the "shadow"
+projected by a line segment onto a rectangle.
+
+When devising an algorithm for the line segment shadow, a problem that appears
+early is the proliferation of possible configurations of the line segment and
+rectangle. If we carefully begin enumerating the various configurations,
+considering the unique intersections between line and rectangle as separate
+cases, we rapidly reach tens of possibilities. This is too many to analyse
+separately.
+
+Due to the proliferation of possibilities, the approach we take here involves
+conditioning the line segment at each step. Our aim is to trim and project the
+line's coordinates until we are left with a simple expression for the area of
+the shadow region that covers all possible line segments and rectangles.

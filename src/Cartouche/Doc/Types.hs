@@ -19,6 +19,7 @@ newtype Para = Para [Inline]
 data Inline
   = InlineStr !Str
   | InlineEmph !Emph
+  | InlineLink !Link
   deriving (Show)
 
 data Head = Head !HeadLevel [Inline]
@@ -31,6 +32,12 @@ newtype Emph = Emph [Inline]
   deriving (Show)
 
 newtype Str = Str Text
+  deriving (Show)
+
+data Link = Link !LinkUrl [Inline]
+  deriving (Show)
+
+newtype LinkUrl = LinkUrl Text
   deriving (Show)
 
 newtype Book = Book [BookItem]
