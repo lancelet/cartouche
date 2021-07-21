@@ -53,6 +53,7 @@ library
     Cartouche.Doc.Types
 
   build-depends:
+    , blaze-html
     , containers
     , megaparsec
     , text
