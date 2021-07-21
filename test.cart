@@ -6,3 +6,10 @@ Paragraphs can have multiple lines.
 This is now a second paragraph.
 
 To draw a vertical bar, it must be escaped; like this \|.
+
+
+|(h2 "Second heading")
+
+An example above of a couple of extra spaces.
+
+This paragraph has a    big space; it should ideally be removed.
