@@ -33,7 +33,7 @@ type Parser = MP.Parsec Void Text
 -------------------------------------------------------------------------------
 
 doc :: Parser Doc
-doc = Doc <$> MP.many (block <* optwsnl)
+doc = Doc <$> (optwsnl *> MP.many (block <* optwsnl))
 
 block :: Parser Block
 block =
