@@ -10,6 +10,7 @@ newtype Doc = Doc [Block]
 data Block
   = BlockHead !Head
   | BlockPara !Para
+  | BlockBook !Book
   deriving (Show)
 
 newtype Para = Para [Inline]
@@ -30,6 +31,28 @@ newtype Emph = Emph [Inline]
   deriving (Show)
 
 newtype Str = Str Text
+  deriving (Show)
+
+newtype Book = Book [BookItem]
+  deriving (Show)
+
+data BookItem
+  = BookItemTitle !BookTitle
+  | BookItemSubTitle !BookSubTitle
+  | BookItemAuthor !BookAuthor
+  | BookItemInclude !BookInclude
+  deriving (Show)
+
+newtype BookTitle = BookTitle Text
+  deriving (Show)
+
+newtype BookSubTitle = BookSubTitle Text
+  deriving (Show)
+
+newtype BookAuthor = BookAuthor Text
+  deriving (Show)
+
+newtype BookInclude = BookInclude FilePath
   deriving (Show)
 
 -------------------------------------------------------------------------------

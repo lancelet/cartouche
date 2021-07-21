@@ -7,7 +7,7 @@ import Prelude hiding (readFile)
 
 main :: IO ()
 main = do
-  putStrLn "Loading test.cart"
-  txt <- readFile "test.cart"
+  putStrLn "Loading toc.cart"
+  txt <- readFile "toc.cart"
   putStrLn "Running parser"
   MP.parseTest Parser.doc txt

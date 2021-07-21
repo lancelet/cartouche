@@ -1,0 +1,7 @@
+|(book
+  (title "This is the title")
+  (subtitle "The subtitle")
+  (author "Jonathan Merritt")
+  (include "test1.cart")
+  (include "test2.cart")
+)

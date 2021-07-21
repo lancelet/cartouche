@@ -5,7 +5,18 @@
 module Cartouche.Doc.Parser where
 
 import Cartouche.Doc.Types
-  ( Block (BlockHead, BlockPara),
+  ( Block (BlockBook, BlockHead, BlockPara),
+    Book (Book),
+    BookAuthor (BookAuthor),
+    BookInclude (BookInclude),
+    BookItem
+      ( BookItemAuthor,
+        BookItemInclude,
+        BookItemSubTitle,
+        BookItemTitle
+      ),
+    BookSubTitle (BookSubTitle),
+    BookTitle (BookTitle),
     Doc (Doc),
     Emph (Emph),
     Head (Head),
@@ -37,7 +48,8 @@ doc = Doc <$> (optwsnl *> MP.many (block <* optwsnl))
 
 block :: Parser Block
 block =
-  (BlockHead <$> head)
+  (BlockHead <$> MP.try head)
+    <|> (BlockBook <$> MP.try book)
     <|> (BlockPara <$> para)
 
 cartouche :: Parser a -> Parser a
@@ -48,6 +60,9 @@ head = cartouche sHead
 
 para :: Parser Para
 para = Para <$> inlines
+
+book :: Parser Book
+book = cartouche sBook
 
 inlines :: Parser [Inline]
 inlines = collapseMultipleSpaces . collapseStrs . mconcat <$> MP.some line
@@ -102,6 +117,32 @@ str = Str . mconcat <$> MP.some strChunk
 
 emph :: Parser Emph
 emph = cartouche sEmph
+
+-------------------------------------------------------------------------------
+-- BOOK ITEMS
+-------------------------------------------------------------------------------
+
+sBook :: Parser Book
+sBook = inS $ Book <$> (sSym "book" *> MP.many (sBookItem <* optwsnl))
+
+sBookItem :: Parser BookItem
+sBookItem =
+  (BookItemTitle <$> MP.try sBookTitle)
+    <|> (BookItemSubTitle <$> MP.try sBookSubTitle)
+    <|> (BookItemAuthor <$> MP.try sBookAuthor)
+    <|> (BookItemInclude <$> sBookInclude)
+
+sBookTitle :: Parser BookTitle
+sBookTitle = inS $ BookTitle <$> (sSym "title" *> sString)
+
+sBookSubTitle :: Parser BookSubTitle
+sBookSubTitle = inS $ BookSubTitle <$> (sSym "subtitle" *> sString)
+
+sBookAuthor :: Parser BookAuthor
+sBookAuthor = inS $ BookAuthor <$> (sSym "author" *> sString)
+
+sBookInclude :: Parser BookInclude
+sBookInclude = inS $ BookInclude . Text.unpack <$> (sSym "include" *> sString)
 
 -------------------------------------------------------------------------------
 -- S-EXPRESSIONS
